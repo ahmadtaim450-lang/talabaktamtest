@@ -1827,21 +1827,32 @@ var _splashShownAt = Date.now();
     // Refresh: blur spinner
     d.innerHTML = '<div style="position:fixed;inset:0;z-index:9999;background:rgba(255,255,255,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;transition:opacity .4s"><div style="width:36px;height:36px;border:3px solid #f0f0f0;border-top-color:#F6921E;border-radius:50%;animation:splSpin .7s linear infinite"></div></div>';
   } else {
-    // First open / navigate: white logo splash
-    d.innerHTML = '<div style="position:fixed;inset:0;z-index:9999;background:#fff;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease"><img src="logo.png" alt="طلبك تم" style="width:160px;height:auto;object-fit:contain"></div>';
+    // First open / navigate: white logo splash with cinematic fade
+    d.innerHTML = '<div style="position:fixed;inset:0;z-index:9999;background:#fff;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease"><img id="splashLogo" src="logo.png" alt="طلبك تم" style="width:150px;height:auto;object-fit:contain;opacity:0;transform:scale(.88);transition:opacity .55s ease,transform .55s cubic-bezier(.34,1.4,.64,1)"></div>';
   }
-  document.addEventListener('DOMContentLoaded', function(){ document.body.appendChild(d); });
+  document.addEventListener('DOMContentLoaded', function(){
+    document.body.appendChild(d);
+    // Trigger logo cinematic entrance after appended to DOM
+    requestAnimationFrame(function(){requestAnimationFrame(function(){
+      var img=document.getElementById('splashLogo');
+      if(img){img.style.opacity='1';img.style.transform='scale(1)';}
+    });});
+  });
 })();
 </script>
 <style>@keyframes splSpin{to{transform:rotate(360deg)}}</style>
 
 <!-- Install Banner -->
-<div id="installBanner" style="display:none;position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:9998;width:calc(100% - 32px);max-width:450px;background:#fff;border-radius:16px;padding:16px 18px;box-shadow:0 8px 32px rgba(0,0,0,.15);border:1.5px solid rgba(246,146,30,.15);animation:slideUpBanner .4s ease">
-  <button onclick="dismissInstall()" style="position:absolute;top:10px;left:10px;width:28px;height:28px;border:none;background:rgba(0,0,0,.06);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:#737373">✕</button>
-  <div style="display:flex;align-items:center;gap:14px">
-    <img src="icon-192.png" alt="" style="width:48px;height:48px;border-radius:12px;flex-shrink:0">
+<div id="installBanner" style="display:none;position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:9998;width:calc(100% - 32px);max-width:450px;background:#fff;border-radius:20px;padding:20px 18px 18px;box-shadow:0 8px 32px rgba(0,0,0,.15);border:1.5px solid rgba(246,146,30,.18);animation:slideUpBanner .4s ease">
+  <!-- X button inside, top-right corner, away from install button -->
+  <button onclick="dismissInstall()" style="position:absolute;top:10px;right:10px;width:26px;height:26px;border:none;background:rgba(0,0,0,.06);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:#555">✕</button>
+  <div style="display:flex;align-items:center;gap:16px;padding-right:28px">
+    <!-- Logo with orange glow -->
+    <div style="flex-shrink:0;width:58px;height:58px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px rgba(246,146,30,.2),0 0 18px 4px rgba(246,146,30,.25)">
+      <img src="logo.png" alt="طلبك تم" style="width:46px;height:46px;object-fit:contain">
+    </div>
     <div style="flex:1;min-width:0">
-      <div style="font-size:15px;font-weight:800;color:#1a1a1a;margin-bottom:2px">ثبّت تطبيق طلبك تم</div>
+      <div style="font-size:15px;font-weight:800;color:#1a1a1a;margin-bottom:3px">ثبّت تطبيق طلبك تم</div>
       <div style="font-size:12px;color:#737373">وصول سريع من الشاشة الرئيسية</div>
     </div>
     <button id="installBtn" onclick="installApp()" style="padding:10px 20px;border:none;border-radius:10px;background:#F6921E;color:#fff;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;flex-shrink:0;white-space:nowrap">تثبيت</button>
@@ -4016,14 +4027,9 @@ function hideSplash(){
   // For refresh spinner hide immediately after data loads
   var isReload=false;
   try{isReload=performance.getEntriesByType('navigation')[0].type==='reload';}catch(e){}
-  var MIN_SPLASH = isReload ? 0 : 800;
-  var elapsed = Date.now() - _splashShownAt;
-  var delay = Math.max(0, MIN_SPLASH - elapsed);
-  setTimeout(function(){
-    var rs=document.getElementById('refreshSplash');
-    if(rs){rs.firstChild.style.opacity='0';setTimeout(()=>rs.remove(),isReload?400:500);}
-    setTimeout(showInstallBanner,2000);
-  },delay);
+  var rs=document.getElementById('refreshSplash');
+  if(rs){rs.firstChild.style.opacity='0';setTimeout(()=>rs.remove(),isReload?400:500);}
+  setTimeout(showInstallBanner,2000);
 }
 </script>
 
