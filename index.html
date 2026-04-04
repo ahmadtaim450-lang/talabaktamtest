@@ -1623,6 +1623,60 @@ textarea.form-input{resize:vertical;min-height:90px}
 .contact-cta-call svg{width:16px;height:16px;flex-shrink:0}
 .contact-cta-call:active{transform:scale(.97)}
 
+/* Pagination Styles */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.pg-btn {
+  min-width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1.5px solid #f0f0f0;
+  background: #fff;
+  color: var(--s800);
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.pg-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: var(--primary-lt);
+  color: var(--primary);
+}
+.pg-btn.act {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(246,146,30,0.3);
+}
+.pg-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: #f9fafb;
+}
+.pg-dots {
+  color: var(--s400);
+  font-weight: 700;
+  padding: 0 4px;
+}
+.pg-info {
+  text-align: center;
+  font-size: 12px;
+  color: var(--s500);
+  margin-top: 12px;
+  font-weight: 600;
+}
+
 /* Footer Social Icons */
 .ft-social{display:flex;gap:10px;margin-top:16px}
 .ft-social a{
@@ -2962,7 +3016,7 @@ function renderListings(keepPage){
 }
 
 let _currentPage=1;
-const PER_PAGE=20;
+const PER_PAGE=50;
 let _filteredList=[];
 let _loadedCount=0;
 let _scrollLoading=false;
@@ -3038,76 +3092,57 @@ function filterListings(keepPage){
 }
 
 function goToPage(page){
-  _currentPage=1;
-  filterListings();
+  if(page < 1 || page > Math.ceil(_filteredList.length / PER_PAGE)) return;
+  _currentPage=page;
+  renderPage(_currentPage);
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function renderPage(page){
   clearTimers();
   _currentPage=page;
-  _loadedCount=Math.min(PER_PAGE,_filteredList.length);
-
-  const pageItems=_filteredList.slice(0,_loadedCount);
+  const start = (page - 1) * PER_PAGE;
+  const end = Math.min(start + PER_PAGE, _filteredList.length);
+  const pageItems = _filteredList.slice(start, end);
+  
   document.getElementById('allGrid').innerHTML=pageItems.map((l,i)=>renderCard(l,i,'full')).join('');
   setTimeout(()=>initCarousels(document.getElementById('allGrid')),150);
   
-  // Show/hide load indicator
-  const wrap=document.getElementById('paginationWrap');
-  if(_loadedCount<_filteredList.length){
-    wrap.innerHTML=`<div style="text-align:center;padding:20px 0"><div style="width:32px;height:32px;border:3px solid #f0f0f0;border-top-color:#F6921E;border-radius:50%;animation:splSpin .7s linear infinite;margin:0 auto"></div></div>`;
-  }else{wrap.innerHTML='';}
+  renderPagination(page, Math.ceil(_filteredList.length / PER_PAGE), _filteredList.length, start, end);
 }
-
-function loadMoreScroll(){
-  if(_scrollLoading||_loadedCount>=_filteredList.length)return;
-  _scrollLoading=true;
-  
-  const newEnd=Math.min(_loadedCount+PER_PAGE,_filteredList.length);
-  const newItems=_filteredList.slice(_loadedCount,newEnd);
-  const grid=document.getElementById('allGrid');
-  grid.insertAdjacentHTML('beforeend',newItems.map((l,i)=>renderCard(l,_loadedCount+i,'full')).join(''));
-  setTimeout(()=>initCarousels(grid),150);
-  _loadedCount=newEnd;
-  _scrollLoading=false;
-  
-  const wrap=document.getElementById('paginationWrap');
-  if(_loadedCount>=_filteredList.length){wrap.innerHTML='';}
-}
-
-// Infinite scroll - auto load when near bottom
-window.addEventListener('scroll',function(){
-  if(_scrollLoading||_loadedCount>=_filteredList.length)return;
-  const listPage=document.getElementById('page-listings');
-  if(!listPage||!listPage.classList.contains('act'))return;
-  if((window.innerHeight+window.scrollY)>=document.body.offsetHeight-600){
-    loadMoreScroll();
-  }
-});
 
 function renderPagination(current,totalPages,total,start,end){
   const wrap=document.getElementById('paginationWrap');
   if(totalPages<=1){wrap.innerHTML='';return;}
   
-  let html='';
+  let html='<div class="pagination-container">';
   // Previous button
   html+=`<button class="pg-btn" ${current===1?'disabled':''} onclick="goToPage(${current-1})">${ICON.prev}</button>`;
   
   // Smart ellipsis: always show first, last, and 2 pages around current
   const pages=[];
-  if(totalPages<=9){
-    for(let i=1;i<=totalPages;i++)pages.push(i);
-  }else{
-    // Always page 1
+  const sidePages = 1; // Number of pages to show on each side of current
+  
+  if(totalPages <= 7){
+    for(let i=1; i<=totalPages; i++) pages.push(i);
+  } else {
     pages.push(1);
-    // Left ellipsis?
-    if(current>4) pages.push('...');
-    // Pages around current (2 neighbors)
-    const lo=Math.max(2,current-2);
-    const hi=Math.min(totalPages-1,current+2);
-    for(let i=lo;i<=hi;i++) pages.push(i);
-    // Right ellipsis?
-    if(current<totalPages-3) pages.push('...');
-    // Always last page
+    
+    if(current > sidePages + 3){
+      pages.push('...');
+    }
+    
+    const lo = Math.max(2, current - sidePages);
+    const hi = Math.min(totalPages - 1, current + sidePages);
+    
+    for(let i=lo; i<=hi; i++){
+      if(!pages.includes(i)) pages.push(i);
+    }
+    
+    if(current < totalPages - (sidePages + 2)){
+      pages.push('...');
+    }
+    
     if(!pages.includes(totalPages)) pages.push(totalPages);
   }
   
@@ -3121,6 +3156,7 @@ function renderPagination(current,totalPages,total,start,end){
   
   // Next button
   html+=`<button class="pg-btn" ${current===totalPages?'disabled':''} onclick="goToPage(${current+1})">${ICON.next}</button>`;
+  html+='</div>';
   
   // Info text
   html+=`<div class="pg-info">عرض ${start+1}–${end} من ${total} إعلان</div>`;
