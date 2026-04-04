@@ -2501,17 +2501,19 @@ function initCarousels(container){
         if(!isDragging)return;
         const dx=Math.abs(e.touches[0].clientX-startX);
         const dy=Math.abs(e.touches[0].clientY-startY);
-        if(!direction&&(dx>8||dy>8)){direction=dx>dy?'h':'v';}
+        if(!direction&&(dx>12||dy>12)){direction=dx>dy?'h':'v';}
         if(direction==='h')e.preventDefault();
       },{passive:false});
       cr.addEventListener('touchend',e=>{
         if(!isDragging)return;isDragging=false;
         if(direction!=='h')return;
         const diff=startX-e.changedTouches[0].clientX;
-        if(Math.abs(diff)>40){
-          clearInterval(t); // Stop autoplay on swipe
+        if(Math.abs(diff)>55){
+          clearInterval(t);
           if(diff>0)show(cur+1); else show(cur-1);
         }
+        // إذا ما كانت swipe حقيقية، خليها click تكمل
+        direction=null;
       },{passive:true});
     }
     // Click on dots
