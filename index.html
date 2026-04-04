@@ -2495,9 +2495,8 @@ function mixFreeAds(mainItems, freeItems, every=3){
   return result;
 }
 const fmtPrice=p=>{
-  if(p>=1e6)return'\u200F'+(p/1e6).toFixed(p%1e6===0?0:1)+' مليون ل.س';
-  if(p>=1e3)return'\u200F'+(p/1e3).toFixed(0)+' ألف ل.س';
-  return'\u200F'+p+' ل.س';
+  if(!p && p!==0) return '';
+  return '‏' + Number(p).toLocaleString('en-US') + ' ل.س';
 };
 
 /* ===== SVG ICONS ===== */
