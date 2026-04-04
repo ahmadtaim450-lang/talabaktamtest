@@ -2459,6 +2459,10 @@ const fmtPrice=p=>{
 };
 
 /* ===== SVG ICONS ===== */
+function esc(str){
+  if(!str && str!==0) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
 const ICON={
   bed:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 012 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>',
   bath:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16a1 1 0 011 1v3a4 4 0 01-4 4H7a4 4 0 01-4-4v-3a1 1 0 011-1z"/><path d="M6 12V5a2 2 0 012-2h3v2.25"/></svg>',
@@ -2590,7 +2594,7 @@ function renderCard(l,i,mode){
     specs=`<div class="l-spec">${ICON.car} ${l.carType||'—'} ${l.carModel||''}</div><div class="l-spec">${ICON.year} ${l.carYear||'—'}</div>${rent?'':`<div class="l-spec">${ICON.km} ${l.carKm?l.carKm.toLocaleString()+' كم':'—'}</div>`}`;
   }
   
-  const imgHTML=imgs.map((s,j)=>`<img src="${s}" alt="${l.title}" class="${j===0?'act':''}" loading="lazy">`).join('');
+  const imgHTML=imgs.map((s,j)=>`<img src="${s}" alt="${esc(l.title)}" class="${j===0?'act':''}" loading="lazy">`).join('');
   const dotsHTML=imgs.length>1?`<div class="l-dots">${imgs.map((_,j)=>`<span class="${j===0?'act':''}"></span>`).join('')}</div>`:'';
   let badgeClass=l.catId==='apt-rent'?'rent':l.catId==='apt-sale'?'sale':l.catId==='car-rent'?'car-r':l.catId==='car-sale'?'car-s':l.catId==='equip-rent'?'equip-r':l.catId==='free-ad'?'free-ad':'equip-s';
   let badgeLabel=cat?cat.label:'';
@@ -2619,21 +2623,21 @@ function renderCard(l,i,mode){
 
   // Free ads: 1 image only
   const cardImgs=freead?imgs.slice(0,1):imgs;
-  const cardImgHTML=cardImgs.map((s,j)=>`<img src="${s}" alt="${l.title}" class="${j===0?'act':''}" loading="lazy">`).join('');
+  const cardImgHTML=cardImgs.map((s,j)=>`<img src="${s}" alt="${esc(l.title)}" class="${j===0?'act':''}" loading="lazy">`).join('');
   const cardDotsHTML=cardImgs.length>1?`<div class="l-dots">${cardImgs.map((_,j)=>`<span class="${j===0?'act':''}"></span>`).join('')}</div>`:'';
 
-  const descHTML=l.desc?`<div class="l-desc">${l.desc.split('\n')[0]}</div>`:'';
+  const descHTML=l.desc?`<div class="l-desc">${esc(l.desc).split('\n')[0]}</div>`:'';
 
   if(mode==='full'){
     return `<div class="l-card-full af s${Math.min((i%5)+1,5)}" style="direction:rtl" onclick="event.stopPropagation();viewDetail('${l.id}')">
       <div class="l-img">${cardImgHTML}${cardDotsHTML}${featHTML}${freeAdBadge}</div>
-      <div class="l-body" style="direction:rtl;text-align:right"><div class="l-title">${l.title}</div>${descHTML}<div class="l-specs">${specs}</div><div class="l-loc">${ICON.pin}${l.location}، جبلة</div>${priceHTML}</div>
+      <div class="l-body" style="direction:rtl;text-align:right"><div class="l-title">${esc(l.title)}</div>${descHTML}<div class="l-specs">${specs}</div><div class="l-loc">${ICON.pin}${esc(l.location)}، جبلة</div>${priceHTML}</div>
     </div>`;
   }
   
   return `<div class="l-card af s${Math.min((i%5)+1,5)}" style="direction:rtl" onclick="event.stopPropagation();viewDetail('${l.id}')">
     <div class="l-img">${cardImgHTML}${cardDotsHTML}${featHTML}${freeAdBadge}</div>
-    <div class="l-body" style="direction:rtl;text-align:right"><div class="l-title">${l.title}</div>${descHTML}<div class="l-specs">${specs}</div><div class="l-loc">${ICON.pin}${l.location}، جبلة</div>${priceHTML}</div>
+    <div class="l-body" style="direction:rtl;text-align:right"><div class="l-title">${esc(l.title)}</div>${descHTML}<div class="l-specs">${specs}</div><div class="l-loc">${ICON.pin}${esc(l.location)}، جبلة</div>${priceHTML}</div>
   </div>`;
 }
 
@@ -3173,7 +3177,7 @@ function viewDetail(id){
   let imgs=l.images?.length?l.images:(apt?[APT_IMGS[0]]:equip?[EQUIP_IMGS[0]]:freead?[FREEAD_IMGS[0]]:[CAR_IMGS[0]]);
   if(freead) imgs=imgs.slice(0,1);
   
-  const imgHTML=imgs.map((s,j)=>`<img src="${s}" alt="${l.title}" class="${j===0?'act':''}" loading="lazy">`).join('');
+  const imgHTML=imgs.map((s,j)=>`<img src="${s}" alt="${esc(l.title)}" class="${j===0?'act':''}" loading="lazy">`).join('');
   const dotsHTML=imgs.length>1?`<div class="l-dots">${imgs.map((_,j)=>`<span class="${j===0?'act':''}"></span>`).join('')}</div>`:'';
   let badgeClass=l.catId==='apt-rent'?'rent':l.catId==='apt-sale'?'sale':l.catId==='car-rent'?'car-r':l.catId==='car-sale'?'car-s':l.catId==='equip-rent'?'equip-r':l.catId==='free-ad'?'free-ad':'equip-s';
   
@@ -3187,17 +3191,17 @@ function viewDetail(id){
 	        <button class="det-share-top" onclick="shareListing(${l.id})">${ICON.share}</button>
 	      </div>
 	      <div class="det-content">
-	        <div class="det-title af">${l.title}</div>
+	        <div class="det-title af">${esc(l.title)}</div>
 		        <div class="det-meta af s1">
 		          <span class="det-price" id="aptRentPrice">${fmtPrice(l.price)} <small>/ يوم</small></span>
-		          <span class="det-loc" onclick="openMap('${l.location}')" style="cursor:pointer">${ICON.pin}${l.location}، جبلة</span>
+		          <span class="det-loc" onclick="openMap('${esc(l.location)}')" style="cursor:pointer">${ICON.pin}${esc(l.location)}، جبلة</span>
 		          <span class="det-cat rent">${cat.label}</span>
 		          ${(l.featured && !freead)?`<span class="det-feat-text">مميز</span>`:''}
 		        </div>
 	        <div class="det-specs af s2">${specsHTML}</div>
 	        ${buildMapSection(l.location)}
 	        <div class="det-desc af s3">
-	          <h3 class="det-desc-title">الوصف</h3>${l.desc}
+	          <h3 class="det-desc-title">الوصف</h3>${esc(l.desc)}
 	        </div>
 	        <button class="det-share-btn af s3" onclick="shareListing(${l.id})" style="margin-bottom:20px">${ICON.share} مشاركة</button>
 
@@ -3311,17 +3315,17 @@ function viewDetail(id){
         <button class="det-share-top" onclick="shareListing(${l.id})">${ICON.share}</button>
       </div>
 	      <div class="det-content">
-	        <div class="det-title af">${l.title}</div>
+	        <div class="det-title af">${esc(l.title)}</div>
 	        <div class="det-meta af s1">
 	          <span class="det-price">${fmtPrice(l.price)}</span>
-	          <span class="det-loc" onclick="openMap('${l.location}')" style="cursor:pointer">${ICON.pin}${l.location}، جبلة</span>
+	          <span class="det-loc" onclick="openMap('${esc(l.location)}')" style="cursor:pointer">${ICON.pin}${esc(l.location)}، جبلة</span>
 	          <span class="det-cat ${badgeClass}">${cat.label}</span>
 	          ${(l.featured && !freead)?`<span class="det-feat-text">مميز</span>`:''}
 	        </div>
         <div class="det-specs af s2">${specsHTML}</div>
         ${buildMapSection(l.location)}
         <div class="det-desc af s3">
-          <h3 class="det-desc-title">الوصف</h3>${l.desc}
+          <h3 class="det-desc-title">الوصف</h3>${esc(l.desc)}
         </div>
         <button class="det-share-btn af s3" onclick="shareListing(${l.id})" style="margin-bottom:20px">${ICON.share} مشاركة</button>
 
@@ -3399,16 +3403,16 @@ function viewDetail(id){
         <button class="det-share-top" onclick="shareListing(${l.id})">${ICON.share}</button>
       </div>
 	      <div class="det-content">
-	        <div class="det-title af">${l.title}</div>
+	        <div class="det-title af">${esc(l.title)}</div>
 	        <div class="det-meta af s1">
 	          <span class="det-price">${fmtPrice(l.price)}</span>
 	          ${l.negotiable!==undefined?`<span class="l-neg ${l.negotiable?'yes':'no'}" style="font-size:12px;padding:6px 14px;border-radius:10px">${l.negotiable?'قابل للتفاوض':'غير قابل للتفاوض'}</span>`:''}
-	          <span class="det-loc" onclick="openMap('${l.location}')" style="cursor:pointer">${ICON.pin}${l.location}، جبلة</span>
+	          <span class="det-loc" onclick="openMap('${esc(l.location)}')" style="cursor:pointer">${ICON.pin}${esc(l.location)}، جبلة</span>
 	          <span class="det-cat ${badgeClass}">${cat.label}</span>
 	          ${l.featured?`<span class="det-feat-text">مميز</span>`:''}
 	        </div>
         <div class="det-desc-container af s2">
-          <div class="det-desc"><h3 class="det-desc-title">الوصف</h3>${l.desc}</div>
+          <div class="det-desc"><h3 class="det-desc-title">الوصف</h3>${esc(l.desc)}</div>
           <div class="det-actions">
             <button class="det-wa-btn" onclick="openWA('${l.id}')">${ICON.wa} تواصل عبر واتساب</button>
             <a class="det-share-btn" href="tel:+963930991965" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;background:#F6921E;color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:20px;height:20px"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.11 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> اتصال</a>
@@ -3427,15 +3431,15 @@ function viewDetail(id){
         <button class="det-share-top" onclick="shareListing(${l.id})">${ICON.share}</button>
       </div>
 	      <div class="det-content">
-	        <div class="det-title af">${l.title}</div>
+	        <div class="det-title af">${esc(l.title)}</div>
 	        <div class="det-meta af s1">
 	          <span class="det-price">إعلان مجاني</span>
-	          <span class="det-loc" onclick="openMap('${l.location}')" style="cursor:pointer">${ICON.pin}${l.location}، جبلة</span>
+	          <span class="det-loc" onclick="openMap('${esc(l.location)}')" style="cursor:pointer">${ICON.pin}${esc(l.location)}، جبلة</span>
 	          <span class="det-cat free-ad">${cat.label}</span>
 	          ${(l.featured && !freead)?`<span class="det-feat-text">مميز</span>`:''}
 	        </div>
         <div class="det-desc-container af s2">
-          <div class="det-desc"><h3 class="det-desc-title">الوصف</h3>${l.desc}</div>
+          <div class="det-desc"><h3 class="det-desc-title">الوصف</h3>${esc(l.desc)}</div>
           <div class="det-actions">
             ${l.phone ? `<a class="det-wa-btn" href="https://wa.me/${l.phone.replace(/[^0-9]/g,'')}" target="_blank" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px">${ICON.wa} تواصل عبر واتساب</a>
             <a class="det-share-btn" href="tel:+${l.phone.replace(/[^0-9]/g,'')}" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;background:#F6921E;color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:20px;height:20px"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.11 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> اتصال</a>` : `<button class="det-wa-btn" onclick="openWA('${l.id}')">${ICON.wa} تواصل عبر واتساب</button>`}
@@ -3457,18 +3461,18 @@ function viewDetail(id){
         <button class="det-share-top" onclick="shareListing(${l.id})">${ICON.share}</button>
       </div>
 	      <div class="det-content">
-	        <div class="det-title af">${l.title}</div>
+	        <div class="det-title af">${esc(l.title)}</div>
 	        <div class="det-meta af s1">
 	          <span class="det-price">${fmtPrice(l.price)}</span>
 	          ${l.negotiable!==undefined?`<span class="l-neg ${l.negotiable?'yes':'no'}" style="font-size:12px;padding:6px 14px;border-radius:10px">${l.negotiable?'قابل للتفاوض':'غير قابل للتفاوض'}</span>`:''}
-	          <span class="det-loc" onclick="openMap('${l.location}')" style="cursor:pointer">${ICON.pin}${l.location}، جبلة</span>
+	          <span class="det-loc" onclick="openMap('${esc(l.location)}')" style="cursor:pointer">${ICON.pin}${esc(l.location)}، جبلة</span>
 	          <span class="det-cat ${badgeClass}">${cat.label}</span>
 	          ${(l.featured && !freead)?`<span class="det-feat-text">مميز</span>`:''}
 	        </div>
 	        <div class="det-specs af s2">${specsHTML}</div>
 	        ${apt?buildMapSection(l.location):''}
 	        <div class="det-desc-container af s3">
-	          <div class="det-desc"><h3 class="det-desc-title">الوصف</h3>${l.desc}</div>
+	          <div class="det-desc"><h3 class="det-desc-title">الوصف</h3>${esc(l.desc)}</div>
 	          <div class="det-actions">
 	            <button class="det-wa-btn" onclick="openWA(${l.id})">${ICON.wa} للتأكيد والاستفسار التواصل عبر واتساب</button>
 	            <button class="det-share-btn" onclick="shareListing(${l.id})">${ICON.share} مشاركة</button>
@@ -3873,8 +3877,8 @@ function showSuggestions(q){
   matched.forEach(l=>{
     const sugThumb=l.images&&l.images.length?l.images[0]:'';
     html+=`<div class="sug-item" onclick="closeSuggestions();viewDetail('${l.id}')">
-      <div class="sug-thumb"><img src="${sugThumb}" alt="${l.title}" loading="lazy"></div>
-      <div class="sug-text"><h4>${l.title}</h4><p>${l.location} · ${fmtPrice(l.price)}</p></div>
+      <div class="sug-thumb"><img src="${sugThumb}" alt="${esc(l.title)}" loading="lazy"></div>
+      <div class="sug-text"><h4>${esc(l.title)}</h4><p>${esc(l.location)} · ${fmtPrice(l.price)}</p></div>
     </div>`;
   });
   box.innerHTML=html;
