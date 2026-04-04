@@ -11,14 +11,10 @@
   // which will cause the browser to load the correct page without a page refresh.
   (function(l) {
     if (l.search[1] === '/') {
-      // فك تشفير الـ URL اللي جاي من 404.html
-      var parts = l.search.slice(1).split('&').map(function(s) {
-        return s.replace(/~and~/g, '&');
-      });
-      // أول جزء هو المسار، الباقي params
+      var parts = l.search.slice(1).split('&').map(function(s){ return s.replace(/~and~/g,'&'); });
       var path = parts[0];
       var params = parts.slice(1).join('&');
-      var newUrl = l.pathname.slice(0, -1) + path + (params ? '?' + params : '') + l.hash;
+      var newUrl = l.pathname.slice(0,-1) + path + (params ? '?' + params : '') + l.hash;
       window.history.replaceState(null, null, newUrl);
     }
   }(window.location))
@@ -296,7 +292,7 @@ input[type=number]{-moz-appearance:textfield}
   max-width:calc(100% - 32px);
 }
 .search-wrap input{
-  flex:1;border:none;outline:none;padding:18px 16px;
+  flex:1;border:none;outline:none;padding:14px 16px;
   font-size:14px;background:transparent;color:var(--s900);
   direction:rtl;min-width:0;
 }
@@ -938,7 +934,7 @@ input[type=number]{-moz-appearance:textfield}
 }
 .monthly-title svg{width:20px;height:20px}
 .monthly-select{
-  width:100%;padding:18px 16px;border-radius:12px;border:1.5px solid #f0f0f0;
+  width:100%;padding:14px 16px;border-radius:12px;border:1.5px solid #f0f0f0;
   font-size:15px;font-weight:700;color:var(--s800);background:#fff;
   font-family:var(--font);direction:rtl;outline:none;cursor:pointer;
   appearance:none;-webkit-appearance:none;
@@ -1559,7 +1555,7 @@ textarea.form-input{resize:vertical;min-height:90px}
 .cta-btn{
   display:flex;align-items:center;justify-content:center;gap:8px;
   flex:1;
-  padding:18px 16px;border-radius:14px;
+  padding:14px 16px;border-radius:14px;
   background:#25D366;color:#fff;
   font-size:15px;font-weight:800;
   font-family:var(--font);cursor:pointer;
@@ -1571,7 +1567,7 @@ textarea.form-input{resize:vertical;min-height:90px}
 .cta-btns{display:flex;gap:10px;flex-wrap:nowrap}
 .cta-btn-call{
   display:flex;align-items:center;justify-content:center;gap:8px;flex:1;
-  padding:18px 16px;border-radius:14px;
+  padding:14px 16px;border-radius:14px;
   background:var(--s100);color:var(--s800);
   font-size:15px;font-weight:800;border:none;
   font-family:var(--font);cursor:pointer;
@@ -1819,23 +1815,17 @@ var _splashShownAt = Date.now();
     document.head.appendChild(style);
   }}catch(e){}}
   
-  // Detect navigation type
   var _navType = 'navigate';
   try { _navType = performance.getEntriesByType('navigation')[0].type; } catch(e) {}
-  
   var d = document.createElement('div');
   d.id = 'refreshSplash';
-
   if (_navType === 'reload') {
-    // Refresh: blur spinner
     d.innerHTML = '<div style="position:fixed;inset:0;z-index:9999;background:rgba(255,255,255,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;transition:opacity .4s"><div style="width:36px;height:36px;border:3px solid #f0f0f0;border-top-color:#F6921E;border-radius:50%;animation:splSpin .7s linear infinite"></div></div>';
   } else {
-    // First open / navigate: white logo splash with cinematic fade
     d.innerHTML = '<div style="position:fixed;inset:0;z-index:9999;background:#fff;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease"><img id="splashLogo" src="logo.png" alt="طلبك تم" style="width:150px;height:auto;object-fit:contain;opacity:0;transform:scale(.88);transition:opacity .55s ease,transform .55s cubic-bezier(.34,1.4,.64,1)"></div>';
   }
   document.addEventListener('DOMContentLoaded', function(){
     document.body.appendChild(d);
-    // Trigger logo cinematic entrance after appended to DOM
     requestAnimationFrame(function(){requestAnimationFrame(function(){
       var img=document.getElementById('splashLogo');
       if(img){img.style.opacity='1';img.style.transform='scale(1)';}
@@ -1845,24 +1835,19 @@ var _splashShownAt = Date.now();
 </script>
 <style>@keyframes splSpin{to{transform:rotate(360deg)}}</style>
 
-<!-- Install Banner wrapper (positions both X and card) -->
+<!-- Install Banner -->
 <div id="installBanner" style="display:none;position:fixed;bottom:76px;left:50%;transform:translateX(-50%);z-index:9998;width:calc(100% - 32px);max-width:420px">
-  <!-- X outside top-right of card -->
   <div style="display:flex;justify-content:flex-end;margin-bottom:6px;padding-right:2px">
     <button onclick="dismissInstall()" style="width:22px;height:22px;border:none;background:rgba(0,0,0,.18);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;line-height:1">✕</button>
   </div>
-  <!-- Card -->
   <div style="background:#fff;border-radius:20px;box-shadow:0 12px 40px rgba(0,0,0,.14);border:1.5px solid rgba(246,146,30,.2);animation:slideUpBanner .3s ease;display:flex;align-items:center;gap:12px;padding:12px 14px">
-    <!-- App icon — no border/outline on img itself -->
     <div style="flex-shrink:0;width:52px;height:52px;border-radius:13px;overflow:hidden;box-shadow:0 0 0 2.5px rgba(246,146,30,.35),0 0 18px 5px rgba(246,146,30,.2)">
       <img src="icon-192.png" alt="طلبك تم" style="width:100%;height:100%;object-fit:cover;display:block">
     </div>
-    <!-- Text -->
     <div style="flex:1;min-width:0">
       <div style="font-size:15px;font-weight:800;color:#1a1a1a;margin-bottom:2px">ثبّت تطبيق طلبك تم</div>
       <div style="font-size:12px;color:#888">وصول سريع من الشاشة الرئيسية</div>
     </div>
-    <!-- Install button -->
     <button id="installBtn" onclick="installApp()" style="padding:10px 18px;border:none;border-radius:11px;background:#F6921E;color:#fff;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;flex-shrink:0;white-space:nowrap;box-shadow:0 4px 12px rgba(246,146,30,.4)">تثبيت</button>
   </div>
 </div>
@@ -3144,7 +3129,7 @@ function renderPagination(current,totalPages,total,start,end){
 /* ===== DETAIL ===== */
 function viewDetail(id){
   clearTimers();
-  const l=listings.find(x=>String(x.id)===String(id));if(!l)return;
+  const l=listings.find(x=>x.id===id);if(!l)return;
   window._currentListing=l;
 
   // Browser history for detail page
@@ -3191,7 +3176,7 @@ function viewDetail(id){
 	    document.getElementById('detWrap').innerHTML=`
 	      <div class="det-gallery af">${imgHTML}${dotsHTML}
 	        <button class="det-back" onclick="goBack()">${ICON.back}</button>
-	        <button class="det-share-top" onclick="shareListing('${l.id}')">${ICON.share}</button>
+	        <button class="det-share-top" onclick="event.stopPropagation();shareListing('${l.id}')">${ICON.share}</button>
 	      </div>
 	      <div class="det-content">
 	        <div class="det-title af">${esc(l.title)}</div>
@@ -3206,7 +3191,7 @@ function viewDetail(id){
 	        <div class="det-desc af s3">
 	          <h3 class="det-desc-title">الوصف</h3>${esc(l.desc)}
 	        </div>
-	        <button class="det-share-btn af s3" onclick="shareListing('${l.id}')" style="margin-bottom:20px">${ICON.share} مشاركة</button>
+
 
 	        <!-- Monthly/Daily Toggle -->
 	        <div class="rent-type-toggle af s4">
@@ -3315,7 +3300,7 @@ function viewDetail(id){
     document.getElementById('detWrap').innerHTML=`
       <div class="det-gallery af">${imgHTML}${dotsHTML}
         <button class="det-back" onclick="goBack()">${ICON.back}</button>
-        <button class="det-share-top" onclick="shareListing('${l.id}')">${ICON.share}</button>
+        <button class="det-share-top" onclick="event.stopPropagation();shareListing('${l.id}')">${ICON.share}</button>
       </div>
 	      <div class="det-content">
 	        <div class="det-title af">${esc(l.title)}</div>
@@ -3330,7 +3315,7 @@ function viewDetail(id){
         <div class="det-desc af s3">
           <h3 class="det-desc-title">الوصف</h3>${esc(l.desc)}
         </div>
-        <button class="det-share-btn af s3" onclick="shareListing('${l.id}')" style="margin-bottom:20px">${ICON.share} مشاركة</button>
+
 
         <div class="rent-cal-layout">
           <div class="rent-cal-main">
@@ -3403,7 +3388,7 @@ function viewDetail(id){
     document.getElementById('detWrap').innerHTML=`
       <div class="det-gallery af">${imgHTML}${dotsHTML}
         <button class="det-back" onclick="goBack()">${ICON.back}</button>
-        <button class="det-share-top" onclick="shareListing('${l.id}')">${ICON.share}</button>
+        <button class="det-share-top" onclick="event.stopPropagation();shareListing('${l.id}')">${ICON.share}</button>
       </div>
 	      <div class="det-content">
 	        <div class="det-title af">${esc(l.title)}</div>
@@ -3418,8 +3403,7 @@ function viewDetail(id){
           <div class="det-desc"><h3 class="det-desc-title">الوصف</h3>${esc(l.desc)}</div>
           <div class="det-actions">
             <button class="det-wa-btn" onclick="openWA('${l.id}')">${ICON.wa} تواصل عبر واتساب</button>
-            <a class="det-call-btn" href="tel:+963930991965" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;background:#F6921E;color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:20px;height:20px"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.11 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> اتصال</a>
-            <button class="det-share-btn" onclick="shareListing('${l.id}')">${ICON.share} مشاركة</button>
+            <a class="det-share-btn" href="tel:+963930991965" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;background:#F6921E;color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:20px;height:20px"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.11 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> اتصال</a>
           </div>
         </div>
       </div>`;
@@ -3431,7 +3415,7 @@ function viewDetail(id){
     document.getElementById('detWrap').innerHTML=`
       <div class="det-gallery af">${imgHTML}${dotsHTML}
         <button class="det-back" onclick="goBack()">${ICON.back}</button>
-        <button class="det-share-top" onclick="shareListing('${l.id}')">${ICON.share}</button>
+        <button class="det-share-top" onclick="event.stopPropagation();shareListing('${l.id}')">${ICON.share}</button>
       </div>
 	      <div class="det-content">
 	        <div class="det-title af">${esc(l.title)}</div>
@@ -3445,8 +3429,7 @@ function viewDetail(id){
           <div class="det-desc"><h3 class="det-desc-title">الوصف</h3>${esc(l.desc)}</div>
           <div class="det-actions">
             ${l.phone ? `<a class="det-wa-btn" href="https://wa.me/${l.phone.replace(/[^0-9]/g,'')}" target="_blank" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px">${ICON.wa} تواصل عبر واتساب</a>
-            <a class="det-call-btn" href="tel:+${l.phone.replace(/[^0-9]/g,'')}" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;background:#F6921E;color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:20px;height:20px"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.11 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> اتصال</a>` : `<button class="det-wa-btn" onclick="openWA('${l.id}')">${ICON.wa} تواصل عبر واتساب</button>`}
-            <button class="det-share-btn" onclick="shareListing('${l.id}')">${ICON.share} مشاركة</button>
+            <a class="det-share-btn" href="tel:+${l.phone.replace(/[^0-9]/g,'')}" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;background:#F6921E;color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:20px;height:20px"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.11 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> اتصال</a>` : `<button class="det-wa-btn" onclick="openWA('${l.id}')">${ICON.wa} تواصل عبر واتساب</button>`}
           </div>
         </div>
       </div>`;
@@ -3461,7 +3444,7 @@ function viewDetail(id){
     document.getElementById('detWrap').innerHTML=`
       <div class="det-gallery af">${imgHTML}${dotsHTML}
         <button class="det-back" onclick="goBack()">${ICON.back}</button>
-        <button class="det-share-top" onclick="shareListing('${l.id}')">${ICON.share}</button>
+        <button class="det-share-top" onclick="event.stopPropagation();shareListing('${l.id}')">${ICON.share}</button>
       </div>
 	      <div class="det-content">
 	        <div class="det-title af">${esc(l.title)}</div>
@@ -3478,7 +3461,6 @@ function viewDetail(id){
 	          <div class="det-desc"><h3 class="det-desc-title">الوصف</h3>${esc(l.desc)}</div>
 	          <div class="det-actions">
 	            <button class="det-wa-btn" onclick="openWA('${l.id}')">${ICON.wa} للتأكيد والاستفسار التواصل عبر واتساب</button>
-	            <button class="det-share-btn" onclick="shareListing('${l.id}')">${ICON.share} مشاركة</button>
 	          </div>
 	        </div>
 	      </div>`;
@@ -3572,7 +3554,7 @@ function selectMonth(val,dailyPrice){
 }
 
 function submitMonthlyBooking(id){
-  const l=listings.find(x=>String(x.id)===String(id))||window._currentListing;if(!l)return;
+  const l=listings.find(x=>x.id===id)||window._currentListing;if(!l)return;
   const name=document.getElementById('mbfName').value.trim();
   const last=document.getElementById('mbfLast').value.trim();
   const phone=document.getElementById('mbfPhone').value.trim();
@@ -3626,7 +3608,7 @@ function handleBookClick(){
 }
 
 function submitBooking(id){
-  const l=listings.find(x=>String(x.id)===String(id))||window._currentListing;if(!l)return;
+  const l=listings.find(x=>x.id===id)||window._currentListing;if(!l)return;
   const name=document.getElementById('bfName').value.trim();
   const last=document.getElementById('bfLast').value.trim();
   const phone=document.getElementById('bfPhone').value.trim();
@@ -3713,7 +3695,7 @@ function buildMapSection(loc){
 }
 
 function openWA(id){
-  const l=listings.find(x=>String(x.id)===String(id))||window._currentListing;if(!l)return;
+  const l=listings.find(x=>x.id===id)||window._currentListing;if(!l)return;
   const cat=getCat(l.catId);const apt=isApt(l.catId);const rent=isRent(l.catId);const eq=isEquip(l.catId);
   let msg='السلام عليكم 👋\n';
   msg+='أنا مهتم بالإعلان التالي:\n';
@@ -3739,50 +3721,28 @@ function openWA(id){
 function shareListing(id){
   const l=listings.find(x=>String(x.id)===String(id))||window._currentListing;if(!l)return;
   const cat=getCat(l.catId);const apt=isApt(l.catId);const rent=isRent(l.catId);const eq=isEquip(l.catId);
-  let text='✨ *'+l.title+'* ✨\n\n';
+  const shareUrl=window.location.origin+window.location.pathname+'?id='+l.id;
+  let text='✨ *'+esc(l.title)+'* ✨\n\n';
   text+='🏷️ '+cat.label+'\n';
   text+='💰 '+fmtPrice(l.price)+(rent?' / يوم':'')+'\n';
   text+='📍 '+l.location+'، جبلة\n\n';
   if(apt){text+='🛏️ '+l.rooms+' غرف نوم\n🚿 '+l.baths+' حمام\n📐 '+l.area+' م²\n\n';}
   else if(!eq){
-    text+='🚗 '+l.carType+' '+l.carModel+'\n';
-    text+='📅 سنة الصنع: '+l.carYear+'\n';
+    text+='🚗 '+(l.carType||'')+'\n';
+    if(l.carYear)text+='📅 سنة الصنع: '+l.carYear+'\n';
     if(l.carColor)text+='🎨 اللون: '+l.carColor+'\n';
-    if(!rent&&l.carKm)text+='⏱️ المسافة: '+(l.carKm).toLocaleString()+' كم\n';
     text+='\n';
   }
   if(l.desc)text+='📝 '+l.desc+'\n\n';
-  text+='📲 للتواصل والاستفسار:\nwa.me/'+l.phone+'\n\n';
-  const shareUrl=window.location.origin+window.location.pathname+'?id='+l.id;
-  text+='🔗 عبر منصة طلبك تم\n'+shareUrl;
-  function _showCopied(){
-    // ابحث عن الزر المضغوط — det-share-btn أو det-share-top
-    var btns=[].slice.call(document.querySelectorAll('.det-share-btn, .det-share-top'));
-    btns.forEach(function(btn){
-      var orig=btn.innerHTML;
-      btn.innerHTML='✓';
-      setTimeout(function(){btn.innerHTML=orig;},1500);
-    });
-  }
-  function _copyFallback(){
-    // fallback لما clipboard API ما تشتغل
-    var ta=document.createElement('textarea');
-    ta.value=text;
-    ta.style.cssText='position:fixed;opacity:0;top:0;left:0';
-    document.body.appendChild(ta);
-    ta.focus();ta.select();
-    try{document.execCommand('copy');_showCopied();}catch(e){}
-    document.body.removeChild(ta);
-  }
+  text+='🔗 '+shareUrl;
   if(navigator.share){
-    navigator.share({title:l.title,text:text,url:shareUrl}).catch(function(err){
-      // لو فشل share (مثلاً user cancelled) لا تعمل شي
-      if(err&&err.name!=='AbortError') _copyFallback();
+    navigator.share({title:l.title,text:text,url:shareUrl}).catch(function(e){
+      if(e&&e.name!=='AbortError'){
+        window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
+      }
     });
-  } else if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(_showCopied).catch(_copyFallback);
   } else {
-    _copyFallback();
+    window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
   }
 }
 
@@ -4004,13 +3964,10 @@ const _isRefresh = !!_savedState;
 history.replaceState(_savedState || {page:'home',sC:null,sType:null,sFeatured:false,sQ:'',detailId:null,currentPage:1,scrollPos:0},'',null);
 
 function restoreState() {
-  // ── فحص رابط المشاركة ?id= ──
-  const _urlParams = new URLSearchParams(window.location.search);
-  const _sharedId = _urlParams.get('id');
+  var _urlParams = new URLSearchParams(window.location.search);
+  var _sharedId = _urlParams.get('id');
   if (_sharedId) {
-    // امسح الـ ?id= من الـ URL بدون reload
-    history.replaceState({page:'detail',detailId:_sharedId,sC:null,sType:null,sFeatured:false,sQ:'',currentPage:1}, '', window.location.pathname);
-    // افتح الإعلان بعد ما تتحمل البيانات
+    history.replaceState({page:'detail',detailId:_sharedId,sC:null,sType:null,sFeatured:false,sQ:'',currentPage:1},'',window.location.pathname);
     window._pendingShareId = _sharedId;
     return;
   }
@@ -4059,32 +4016,19 @@ if (USE_FIREBASE) {
     listings = [...fbAds, ...generateTestAds()];
     restoreState();
     if (window._pendingShareId) {
-      const _ad = listings.find(x => x.id === window._pendingShareId);
-      if (_ad) {
-        viewDetail(window._pendingShareId);
-      } else {
-        renderHome();
-      }
+      var _ad = listings.find(function(x){ return String(x.id)===String(window._pendingShareId); });
+      if (_ad) viewDetail(window._pendingShareId); else renderHome();
       window._pendingShareId = null;
     }
     hideSplash();
   }).catch(e => { console.error('Firebase load error:', e); restoreState(); hideSplash(); });
 } else {
   restoreState();
-  if (window._pendingShareId) {
-    const _ad = listings.find(x => x.id === window._pendingShareId);
-    if (_ad) viewDetail(window._pendingShareId);
-    else renderHome();
-    window._pendingShareId = null;
-  }
   hideSplash();
 }
 function hideSplash(){
   var hf=document.getElementById('hideFlash');if(hf)hf.remove();
-  // For first-open splash keep min 1.2s so content is ready when it disappears
-  // For refresh spinner hide immediately after data loads
-  var isReload=false;
-  try{isReload=performance.getEntriesByType('navigation')[0].type==='reload';}catch(e){}
+  var isReload=false;try{isReload=performance.getEntriesByType('navigation')[0].type==='reload';}catch(e){}
   var rs=document.getElementById('refreshSplash');
   if(rs){rs.firstChild.style.opacity='0';setTimeout(()=>rs.remove(),isReload?400:500);}
   setTimeout(showInstallBanner,2000);
