@@ -3267,7 +3267,7 @@ function viewDetail(id){
 	                  <div class="bf-form-fields">
 	                    <div class="bf-group"><label class="bf-label">الاسم الأول</label><input type="text" id="bfName" class="bf-input" placeholder="مثلاً: أحمد"></div>
 	                    <div class="bf-group"><label class="bf-label">الكنية</label><input type="text" id="bfLast" class="bf-input" placeholder="مثلاً: علي"></div>
-	                    <div class="bf-group"><label class="bf-label">رقم الهاتف</label><input type="tel" id="bfPhone" class="bf-input" placeholder="09xxxxxxxx"></div>
+	                    <div class="bf-group"><label class="bf-label">رقم الهاتف</label><input type="tel" id="bfPhone" class="bf-input" placeholder="09xxxxxxxx" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
 	                    <div class="bf-group"><label class="bf-label">العنوان <span class="opt-tag">(اختياري)</span></label><input type="text" id="bfAddress" class="bf-input" placeholder="المدينة، الحي"></div>
 	                  </div>
 	                  <div class="bf-form-footer">
@@ -3301,7 +3301,7 @@ function viewDetail(id){
 	              <div class="bf-form-fields">
 	                <div class="bf-group"><label class="bf-label">الاسم الأول</label><input type="text" id="mbfName" class="bf-input" placeholder="مثلاً: أحمد"></div>
 	                <div class="bf-group"><label class="bf-label">الكنية</label><input type="text" id="mbfLast" class="bf-input" placeholder="مثلاً: علي"></div>
-	                <div class="bf-group"><label class="bf-label">رقم الهاتف</label><input type="tel" id="mbfPhone" class="bf-input" placeholder="09xxxxxxxx"></div>
+	                <div class="bf-group"><label class="bf-label">رقم الهاتف</label><input type="tel" id="mbfPhone" class="bf-input" placeholder="09xxxxxxxx" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
 	              </div>
 	              <div class="bf-form-footer">
 	                <button class="book-wa-btn" onclick="submitMonthlyBooking('${l.id}')">${ICON.wa} للتأكيد والاستفسار التواصل عبر واتساب</button>
@@ -3349,7 +3349,7 @@ function viewDetail(id){
 	          ${(l.featured && !freead)?`<span class="det-feat-text">مميز</span>`:''}
 	        </div>
         <div class="det-specs af s2">${specsHTML}</div>
-        ${buildMapSection(l.location)}
+        ${buildMapSection(l.location, 'موقع السيارة')}
         <div class="det-desc af s3">
           <h3 class="det-desc-title">الوصف</h3>${esc(l.desc)}
         </div>
@@ -3383,7 +3383,7 @@ function viewDetail(id){
                 <div class="bf-form-fields">
                   <div class="bf-group"><label class="bf-label">الاسم الأول</label><input type="text" id="bfName" class="bf-input" placeholder="مثلاً: أحمد"></div>
                   <div class="bf-group"><label class="bf-label">الكنية</label><input type="text" id="bfLast" class="bf-input" placeholder="مثلاً: علي"></div>
-                  <div class="bf-group"><label class="bf-label">رقم الهاتف</label><input type="tel" id="bfPhone" class="bf-input" placeholder="09xxxxxxxx"></div>
+                  <div class="bf-group"><label class="bf-label">رقم الهاتف</label><input type="tel" id="bfPhone" class="bf-input" placeholder="09xxxxxxxx" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
                   <div class="bf-group"><label class="bf-label">العنوان <span class="opt-tag">(اختياري)</span></label><input type="text" id="bfAddress" class="bf-input" placeholder="المدينة، الحي"></div>
                 </div>
                 <div class="bf-form-footer">
@@ -3468,7 +3468,7 @@ function viewDetail(id){
 	                <div class="bf-form-fields">
 	                  <div class="bf-group"><label class="bf-label">الاسم الأول</label><input type="text" id="bfName" class="bf-input" placeholder="مثلاً: أحمد"></div>
 	                  <div class="bf-group"><label class="bf-label">الكنية</label><input type="text" id="bfLast" class="bf-input" placeholder="مثلاً: علي"></div>
-	                  <div class="bf-group"><label class="bf-label">رقم الهاتف</label><input type="tel" id="bfPhone" class="bf-input" placeholder="09xxxxxxxx"></div>
+	                  <div class="bf-group"><label class="bf-label">رقم الهاتف</label><input type="tel" id="bfPhone" class="bf-input" placeholder="09xxxxxxxx" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
 	                  <div class="bf-group"><label class="bf-label">العنوان <span class="opt-tag">(اختياري)</span></label><input type="text" id="bfAddress" class="bf-input" placeholder="المدينة، الحي"></div>
 	                </div>
 	                <div class="bf-form-footer">
@@ -3551,7 +3551,7 @@ function viewDetail(id){
 	          ${(l.featured && !freead)?`<span class="det-feat-text">مميز</span>`:''}
 	        </div>
 	        <div class="det-specs af s2">${specsHTML}</div>
-	        ${apt?buildMapSection(l.location):''}
+	        ${buildMapSection(l.location, apt?'موقع العقار':'موقع السيارة')}
 	        <div class="det-desc-container af s3">
 	          <div class="det-desc"><h3 class="det-desc-title">الوصف</h3>${esc(l.desc)}</div>
 	          <div class="det-actions">
@@ -3775,10 +3775,11 @@ function openMap(loc){
   window.open('https://www.google.com/maps/search/'+q,'_blank');
 }
 
-function buildMapSection(loc){
+function buildMapSection(loc, label){
+  label = label || 'موقع العقار';
   const c=LOC_COORDS[loc]||{lat:35.3614,lng:35.9264};
   return `<div class="det-map-section af s2">
-    <h3 class="det-map-title">${ICON.pin} موقع العقار</h3>
+    <h3 class="det-map-title">${ICON.pin} ${label}</h3>
     <p class="det-map-sub">${loc}، جبلة</p>
     <div class="det-map-wrap" onclick="openMap('${loc}')">
       <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${c.lng-.008}%2C${c.lat-.005}%2C${c.lng+.008}%2C${c.lat+.005}&layer=mapnik" frameborder="0" scrolling="no" loading="lazy" style="width:100%;height:100%;border:0;border-radius:16px;pointer-events:none"></iframe>
